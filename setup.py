@@ -10,6 +10,6 @@ setup(name='divergent_tip_library_python',
       packages=[ 'divergent_tip_library' ],
       install_requires=[
           'netaddr',
-          'dateutil'
+          'python-dateutil'
       ],
       zip_safe=False)
