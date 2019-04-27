@@ -1,0 +1,3 @@
+[submodule "divergent_tip_config"]
+	path = divergent_tip_config
+	url = git@github.com:cneckar/divergent-tip-config.git
