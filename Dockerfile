@@ -8,6 +8,5 @@ WORKDIR /worker
 COPY divergent_tip_library/__init__.py     divergent_tip_library/__init__.py
 COPY divergent_tip_library/constants.py     divergent_tip_library/constants.py
 COPY divergent_tip_library/job_template.py divergent_tip_library/job_template.py
-COPY divergent_tip_library/setup.py        divergent_tip_library/setup.py
 
 EXPOSE 65050/tcp
