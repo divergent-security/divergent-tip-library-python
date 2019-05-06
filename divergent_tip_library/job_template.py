@@ -2,6 +2,7 @@ import json
 import netaddr
 import time
 import uuid
+import socket
 
 import BaseHTTPServer
 import threading
@@ -482,6 +483,8 @@ def _serve_http():
       break
   return
 
+TIPLibraryDNSHooks = {}
+TIPLibraryRealGetaddrinfo = socket.getaddrinfo
 
 class DivergentTIPJob():
   runnable = None
@@ -492,6 +495,9 @@ class DivergentTIPJob():
     raise NotImplementedError("The Process method is not implemented by the Job")
 
   def Start(self):
+    # This allows jobs to force specific DNS resolution results as needed
+    socket.getaddrinfo = DivergentTIPJob.HookedGetaddrinfo
+
     self.httpd_thread = threading.Thread(target=_serve_http)
     self.httpd_thread.start()
     input_data = GetInput()
@@ -559,6 +565,29 @@ class DivergentTIPJob():
       self.httpd_thread.join()
     SetError(self.data_store.error(message))
     self.httpd_thread.join()
+
+  @staticmethod
+  def InstallDNSHook(hostname, port, ip):
+    global TIPLibraryDNSHooks
+    try:
+      address = netaddr.IPAddress(ip)
+    except netaddr.core.AddrFormatError:
+      return False
+    key = (hostname, port)
+    if address.version == 4:
+      TIPLibraryDNSHooks[key] = [(socket.AddressFamily.AF_INET, 0, 0, '', (ip, port))]
+    else:
+      TIPLibraryDNSHooks[key] = [(socket.AddressFamily.AF_INET, 0, 0, '', (ip, port))]
+    return True
+
+  @staticmethod
+  def HookedGetaddrinfo(*args):
+    global TIPLibraryDNSHooks
+    global TIPLibraryRealGetaddrinfo
+    try:
+      return TIPLibraryDNSHooks[args[:2]]
+    except KeyError:
+      return TIPLibraryRealGetaddrinfo(*args)
 
   # Utility function to get a CIDR from a first and last ip
   @staticmethod
