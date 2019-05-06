@@ -3,7 +3,7 @@ set -e
 
 push_containers ()
 {
-	docker push docker push us.gcr.io/sortermonkey-workers/sortermonkey-base-job:latest
+	docker push us.gcr.io/sortermonkey-workers/sortermonkey-base-job:latest
 }
 
 docker build -t "us.gcr.io/sortermonkey-workers/sortermonkey-base-job:latest" .
