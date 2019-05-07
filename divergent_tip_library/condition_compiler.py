@@ -38,7 +38,7 @@ def compile(raw, datatype):
       except:
         return "An invalid condition was detected (The regex immediate on a MATCH operation failed to compile): " + raw, None
       if operation in ["LIST-MATCH", "LIST-NO-MATCH"]:
-        if not job_input_classes[datatype][field] == list:
+        if not job_input_classes[datatype][field] == tuple or not job_input_classes[datatype][field][0] == list:
           return "An invalid condition was detected (the supplied operation must operate on a list field): " + raw, None
       else:
         if not job_input_classes[datatype][field] in [basestring,int,bool]:
