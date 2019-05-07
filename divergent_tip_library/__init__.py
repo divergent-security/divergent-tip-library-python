@@ -6,3 +6,5 @@ from constants import job_input_classes, job_output_classes, conditional_operati
 from job_template import DivergentTIPJob
 
 from validators import JobOutputValidators
+
+from condition_compiler import compile
