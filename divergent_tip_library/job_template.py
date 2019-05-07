@@ -569,15 +569,8 @@ class DivergentTIPJob():
   @staticmethod
   def InstallDNSHook(hostname, port, ip):
     global TIPLibraryDNSHooks
-    try:
-      address = netaddr.IPAddress(ip)
-    except netaddr.core.AddrFormatError:
-      return False
-    key = (hostname, port)
-    if address.version == 4:
-      TIPLibraryDNSHooks[key] = [(socket.AddressFamily.AF_INET, 0, 0, '', (ip, port))]
-    else:
-      TIPLibraryDNSHooks[key] = [(socket.AddressFamily.AF_INET, 0, 0, '', (ip, port))]
+    key = (hostname.lower(), port)
+    TIPLibraryDNSHooks[key] = (ip, port)
     return True
 
   @staticmethod
@@ -585,7 +578,16 @@ class DivergentTIPJob():
     global TIPLibraryDNSHooks
     global TIPLibraryRealGetaddrinfo
     try:
-      return TIPLibraryDNSHooks[args[:2]]
+      ip, port = TIPLibraryDNSHooks[(args[0].lower(), args[1])]
+      version = netaddr.IPAddress(ip).version
+      if version == 4:
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', (ip, port)),
+                (socket.AF_INET, socket.SOCK_DGRAM, 17, '', (ip, port)),
+                (socket.AF_INET, socket.SOCK_RAW, 0, '', (ip, port))]
+      elif version == 6:
+        return [(socket.AF_INET6, socket.SOCK_STREAM, 6, '', (ip, port, 0, 0)),
+                (socket.AF_INET6, socket.SOCK_DGRAM, 17, '', (ip, port, 0, 0)),
+                (socket.AF_INET6, socket.SOCK_RAW, 0, '', (ip, port, 0, 0))]
     except KeyError:
       return TIPLibraryRealGetaddrinfo(*args)
 
