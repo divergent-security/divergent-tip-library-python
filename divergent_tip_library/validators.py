@@ -36,7 +36,7 @@ class JobOutputValidators():
       url = urlparse.urlparse(input)
     except:
       return False
-    return 
+    return True
 
   @staticmethod
   def validateResolvableName(input):
