@@ -332,7 +332,7 @@ job_output_classes = {
     "tags": (list, (basestring, 'Name')),
     "hostname": (basestring, 'Hostname'),
     "service": (basestring, 'Service'),
-    "path": (basestring, 'URLPath'),
+    "url": (basestring, 'URLPath'),
     "scripts": (list, (basestring, 'URLPath')),
     "headers": (list, (basestring, 'FreeForm'))
   },
