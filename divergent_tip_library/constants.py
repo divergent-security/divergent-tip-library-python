@@ -318,7 +318,7 @@ job_output_classes = {
     "expires": (basestring, 'DateTime'),
     "publickey": (basestring, 'FreeForm'),
     "valid": (bool, [True, False]),
-    "hostnames": (list, (basestring, 'Hostname')),
+    "hostnames": (list, (basestring, 'ResolvableName')),
   },
   "Hostname": {
     "tags": (list, (basestring, 'Name')),
